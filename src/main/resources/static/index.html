@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>登录</title>
+<style>
+body{
+    margin:0;
+    background:#f5f7fa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:微软雅黑;
+}
+.login{
+    width:360px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    box-sizing:border-box;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#409EFF;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+.tip{
+    margin-top:15px;
+    font-size:12px;
+    color:#999;
+    text-align:center;
+}
+.register-link{
+    margin-top:12px;
+    text-align:center;
+    font-size:14px;
+}
+.register-link a{
+    color:#409EFF;
+    text-decoration:none;
+    cursor:pointer;
+}
+.register-link a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+<body>
+<div class="login">
+<h2 align="center">AI智能取名系统</h2>
+<input id="userid" placeholder="请输入账号">
+<input
+id="password"
+type="password"
+placeholder="请输入密码">
+<button onclick="login()">
+登录
+</button>
+<div class="register-link">还没有账号？<a href="register.html">立即注册</a></div>
+<div class="tip">默认账号 admin，密码 admin123</div>
+</div>
+<script>
+async function login(){
+    let id=document.getElementById("userid").value;
+    let password=document.getElementById("password").value;
+
+    // 页面由后端 Spring Boot 同源托管，使用相对路径即可，避免跨域问题
+    const response=await fetch("/api/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            userId:id,
+            password:password
+        })
+    });
+    const result=await response.json();
+    if(result.code==200){
+        window.location.href="main.html";
+    }else{
+        alert(result.msg);
+    }
+}
+</script>
+</body>
+</html>

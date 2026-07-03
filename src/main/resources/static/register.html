@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>注册</title>
+<style>
+body{
+    margin:0;
+    background:#f5f7fa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:微软雅黑;
+}
+.login{
+    width:360px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    box-sizing:border-box;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#409EFF;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+.tip{
+    margin-top:8px;
+    font-size:12px;
+    color:#999;
+}
+.login-link{
+    margin-top:12px;
+    text-align:center;
+    font-size:14px;
+}
+.login-link a{
+    color:#409EFF;
+    text-decoration:none;
+    cursor:pointer;
+}
+.login-link a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+<body>
+<div class="login">
+<h2 align="center">注册账号</h2>
+<input id="userid" placeholder="请输入账号（3-20位）">
+<div class="tip">建议使用字母/数字，方便记忆</div>
+<input
+id="password"
+type="password"
+placeholder="请输入密码（6-20位）">
+<input
+id="confirmPassword"
+type="password"
+placeholder="请再次输入密码">
+<button onclick="register()">
+注册
+</button>
+<div class="login-link">已有账号？<a href="index.html">去登录</a></div>
+</div>
+<script>
+async function register(){
+    let id = document.getElementById("userid").value.trim();
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    // 前端先做基础校验，减少无效请求
+    if (!id || !password) {
+        alert("账号和密码不能为空");
+        return;
+    }
+    if (password !== confirmPassword) {
+        alert("两次输入的密码不一致");
+        return;
+    }
+
+    // 页面由后端 Spring Boot 同源托管，使用相对路径即可，避免跨域问题
+    const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: id,
+            password: password
+        })
+    });
+
+    const result = await response.json();
+
+    if (result.code === 200) {
+        alert("注册成功，请登录");
+        window.location.href = "index.html";
+    } else {
+        // 后端会在账号重复、格式不符合要求时返回具体错误信息，例如“该账号已被注册”
+        alert(result.msg);
+    }
+}
+</script>
+</body>
+</html>

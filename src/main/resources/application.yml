@@ -1,0 +1,38 @@
+# 服务端口
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ai-naming
+
+  # 数据库连接配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/ainaming?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    # 密码通过环境变量 DB_PASSWORD 注入，不在代码仓库中保留明文密码
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA / Hibernate 配置
+  jpa:
+    hibernate:
+      # update：根据实体类自动建表/改表，开发阶段方便；生产环境建议改成 validate 或用专门的迁移工具
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+# DeepSeek 相关配置
+# api-key 建议通过环境变量 DEEPSEEK_API_KEY 注入，避免硬编码到代码或配置文件中
+deepseek:
+  # 官方 Chat Completion 接口地址
+  base-url: https://api.deepseek.com
+  # DeepSeek API Key，通过环境变量 DEEPSEEK_API_KEY 注入，不在代码仓库中保留明文密钥
+  api-key: ${DEEPSEEK_API_KEY:}
+  # 使用的模型名称
+  model: ${DEEPSEEK_MODEL:deepseek-v4-flash}
+  # 请求超时时间（毫秒）
+  timeout-millis: 60000
