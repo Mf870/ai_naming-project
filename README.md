@@ -1,7 +1,8 @@
-# AI 智能取名项目（Java 17 + Spring Boot 3）
+# AI 智能取名项目（Java 17 + Spring Boot 3）byMflurry
 
 对接 DeepSeek 官方 Chat Completion API（`https://api.deepseek.com/chat/completions`），
 根据用户提供的姓氏、性别、生辰等信息，AI 生成 5 个推荐中文名字。
+新内容：完善了登录，注册界面与功能。可以查阅历史记录。
 
 ## 目录结构
 
@@ -13,12 +14,13 @@ com.example.ainaming
 ├── config         # DeepSeekConfig（读取配置）、WebClientConfig（构造 WebClient）
 ├── entity         # NameRecord：预留持久化扩展
 ├── exception       # BusinessException + 全局异常处理器
+├── repository     # DAO 完成对用户数据的查询与保存
 └── util           # PromptBuilder（拼接提示词）、JsonContentExtractor（清理模型返回内容）
 ```
 
 ## 运行前准备
 
-1. 安装 JDK 17、Maven 3.8+，本地装好 MySQL 并创建数据库 `ainaming`
+1. 安装 JDK 17(实则使用的是21)、Maven 3.8+，本地装好 MySQL 并创建数据库
 2. 配置密钥（配置文件中不再包含明文密钥，需要通过环境变量注入）：
    - `DEEPSEEK_API_KEY`：你的 DeepSeek API Key
    - `DB_PASSWORD`：你的 MySQL root 密码
@@ -84,5 +86,5 @@ curl -X POST http://localhost:8080/api/name \
 
 - 使用 Spring Boot 3 的 `WebClient`（基于 WebFlux）直接调用 DeepSeek 官方 REST 接口，未使用任何第三方 SDK。
 - API Key 通过 `application.yml` 的 `deepseek.api-key` 配置项读取（支持环境变量覆盖），不写死在代码中。
-- `JsonContentExtractor` 用于清理模型可能附带的 ```json 代码块标记，提高 JSON 解析成功率。
 - 全局异常统一由 `GlobalExceptionHandler` 捕获，返回 `{ code, msg, data }` 格式，避免前端拿到堆栈信息。
+- 使用claude与ChatGPT共同完成作业。
